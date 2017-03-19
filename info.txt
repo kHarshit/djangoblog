@@ -1,0 +1,90 @@
+The model(M) is a model or representation of your data. It’s not the actual data, but an interface to the data.
+The model allows you to pull data from your database without knowing the intricacies of the underlying database.
+The model usually also provides an abstraction layer with your database, so that you can use the same model
+with multiple databases.
+
+The controller(C) controls the flow of information between the model and the view. It uses programmed logic to
+decide what information is pulled from the database via the model and what information is passed to the view.
+It also gets information from the user via the view and implements business logic: either by changing the view,
+or modifying data through the model, or both.
+
+The view(V) is what you see. It’s the presentation layer for your model. On your computer, the view is what you see
+in the browser for a Web app, or the UI for a desktop app. The view also provides an interface to collect user input.
+
+Django is often referred to as an MTV framework. This is probably the only unfortunate bit of naming in Django,
+because Django’s view is more like the controller in MVC, and MVC’s view is actually a Template in Django
+
+
+#### views.py #####
+
+we don’t do anything with request, but it must be the first parameter of the view nonetheless.
+a view is just a Python function that takes an HttpRequest as its first parameter and returns an instance of HttpResponse.
+
+To hook a view function to a particular URL with Django, we use a URLconf. A URLconf is like a table of contents for
+your Django-powered Web site. Basically, it’s a mapping between URLs and the view functions that should be called for
+those URLs. It’s how you tell Django, “For this URL, call this code, and for that URL, call that code.”
+
+e.g. when somebody visits the URL /foo/, call the view function foo_view(), which lives in the Python module views.py
+
+The first line imports two functions from the django.conf.urls module: include which allows you to include a full
+Python import path to another URLconf module, and url which uses a regular expression to pattern match the URL in
+your browser to a module in your Django project.
+
+You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
+The idea behind include() is to make it easy to plug-and-play URLs. Since polls are in their own URLconf (polls/urls.py)
+
+At this point, our URLconf defines only a single URLpattern: the one that handles requests to the URL /hello/.
+What happens when you request a different URL? To find out, try running the Django development server and visiting a
+page such as http://127.0.0.1:8000/goodbye/. You should see a “Page not found” message (Figure 2-2). Django displays
+this message because you requested a URL that’s not defined in your URLconf.
+
+When you run python manage.py runserver, the script looks for a file called settings.py in the inner mysite directory.
+This file contains all sorts of configuration for this particular Django project. The most important setting is called
+ROOT_URLCONF, which tells Django which Python module should be used as the URLconf for this Web site.:
+ROOT_URLCONF = 'mysite.urls'
+This corresponds to the file mysite/urls.py. When a request comes in for a particular URL – say, a request for /hello/
+– Django loads the URLconf pointed to by the ROOT_URLCONF setting. Then it checks each of the URLpatterns in that
+URLconf, in order, comparing the requested URL with the patterns one at a time, until it finds one that matches.
+When it finds one that matches, it calls the view function associated with that pattern, passing it an HttpRequest
+object as the first parameter; a view function must return an HttpResponse.
+Once it does this, Django does the rest, converting the Python object to a proper Web response with the appropriate
+HTTP headers and body (i.e., the content of the Web page).
+
+
+#### database ####
+
+ENGINE tells Django which database engine to use. As we are using SQLite in the examples in this book, we will leave
+it to the default django.db.backends.sqlite3. Or we can use django.db.backends.postgresql
+NAME – The name of your database. If you’re using SQLite, the database will be a file on your computer; in that case,
+NAME should be the full absolute path, including filename, of that file. The default value, os.path.join(BASE_DIR,
+'db.sqlite3'), will store the file in your project directory.
+
+
+#### models ####
+
+A model is the single, definitive source of truth about your data. It contains the essential fields and behaviors
+of the data you’re storing. A Django model is a description of the data in your database, represented as Python code.
+It’s your data layout – the equivalent of your SQL CREATE TABLE statements – except it’s in Python instead of SQL,
+and it includes more than just database column definitions.
+
+The name of each Field instance (e.g. author or pub_date) is the field’s name, in machine-friendly format.
+You’ll use this value in your Python code, and your database will use it as the column name.
+
+Finally, note a relationship is defined, using ForeignKey. That tells Django each Post is related to a
+single User. Django supports all the common database relationships: many-to-one, many-to-many, and one-to-one.
+
+If you’re interested, you can also run $python manage.py check; this checks for any problems in your project
+without making migrations or touching the database.
+By running makemigrations, you’re telling Django that you’ve made some changes to your models (in this case,
+you’ve made new ones) and that you’d like the changes to be stored as a migration.
+Migrations are how Django stores changes to your models (and thus your database schema) - they’re just files on disk.
+You can read the migration for your new model if you like; it’s the file blog/migrations/0001_initial.py
+The migrate command takes all the migrations that haven’t been applied (Django tracks which ones are applied using a
+special table in your database called django_migrations) and runs them against your database - essentially,
+synchronizing the changes you made to your models with the schema in the database.
+
+Change your models (in models.py).
+Run python manage.py makemigrations to create migrations for those changes
+Run python manage.py migrate to apply those changes to the database.
+
+NULL: If True, Django will store empty values as NULL in the database. Default is False.
