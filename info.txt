@@ -17,6 +17,8 @@ because Django’s view is more like the controller in MVC, and MVC’s view is 
 
 #### views.py #####
 
+A view is a “type” of Web page in your Django application that generally serves a specific function and has a
+specific template.
 we don’t do anything with request, but it must be the first parameter of the view nonetheless.
 a view is just a Python function that takes an HttpRequest as its first parameter and returns an instance of HttpResponse.
 
@@ -33,10 +35,20 @@ your browser to a module in your Django project.
 You should always use include() when you include other URL patterns. admin.site.urls is the only exception to this.
 The idea behind include() is to make it easy to plug-and-play URLs. Since polls are in their own URLconf (polls/urls.py)
 
+To keep the mysite/urls.py file clean, so we will import URLs from our blog application to the main mysite/urls.py file.
+Django will now redirect everything that comes into 'http://127.0.0.1:8000/' to blog.urls and look for further
+instructions there.
+
+we're now assigning a view called post_list to the ^$ URL. This regular expression will match ^ (a beginning) followed
+by $ (an end) – so only an empty string will match. That's correct, because in Django URL resolvers,
+'http://127.0.0.1:8000/' is not a part of the URL. This pattern will tell Django that views.post_list is the right
+place to go if someone enters your website at the 'http://127.0.0.1:8000/' address.
+The last part, name='post_list', is the name of the URL that will be used to identify the view.
+
 At this point, our URLconf defines only a single URLpattern: the one that handles requests to the URL /hello/.
 What happens when you request a different URL? To find out, try running the Django development server and visiting a
-page such as http://127.0.0.1:8000/goodbye/. You should see a “Page not found” message (Figure 2-2). Django displays
-this message because you requested a URL that’s not defined in your URLconf.
+page such as http://127.0.0.1:8000/goodbye/. You should see a “Page not found” message. Django displays this message
+because you requested a URL that’s not defined in your URLconf.
 
 When you run python manage.py runserver, the script looks for a file called settings.py in the inner mysite directory.
 This file contains all sorts of configuration for this particular Django project. The most important setting is called
@@ -49,6 +61,35 @@ When it finds one that matches, it calls the view function associated with that 
 object as the first parameter; a view function must return an HttpResponse.
 Once it does this, Django does the rest, converting the Python object to a proper Web response with the appropriate
 HTTP headers and body (i.e., the content of the Web page).
+
+Each view is responsible for doing one of two things: returning an HttpResponse object containing the content for the
+requested page, or raising an exception such as Http404. The rest is up to you.
+Your view can read records from a database, or not. It can use a template system such as Django’s – or a third-party
+Python template system – or not. It can generate a PDF file, output XML, create a ZIP file on the fly, anything you
+want, using whatever Python libraries you want.
+All Django wants is that HttpResponse. Or an exception.
+
+^post/(\d+)/$
+^ for the beginning of the text
+$ for the end of the text
+\d for a digit
++ to indicate that the previous item should be repeated at least once
+() to capture part of the pattern
+
+
+#### templates ####
+
+Now we might be able to get away with putting our templates directly in polls/templates (rather than creating another
+blog subdirectory), but it would actually be a bad idea. Django will choose the first template it finds whose name
+matches, and if you had a template with the same name in a different application, Django would be unable to distinguish
+between them. We need to be able to point Django at the right one, and the easiest way to ensure this is by namespacing
+them. That is, by putting those templates inside another directory named for the application itself.
+
+It’s a very common idiom to load a template, fill a context and return an HttpResponse object with the result of the
+rendered template. Django provides a shortcut render(). It takes the request object as its first argument, a template
+name as its second argument and a dictionary as its optional third argument. It returns an HttpResponse object of the
+given template rendered with the given context.
+
 
 
 #### database ####
@@ -73,6 +114,11 @@ You’ll use this value in your Python code, and your database will use it as th
 Finally, note a relationship is defined, using ForeignKey. That tells Django each Post is related to a
 single User. Django supports all the common database relationships: many-to-one, many-to-many, and one-to-one.
 
+Each field type, except for ForeignKey, ManyToManyField and OneToOneField, takes an optional first positional argument
+– a verbose name. If the verbose name isn’t given, Django will automatically create it using the field’s attribute name,
+converting underscores to spaces, and capitalizing the first character.
+e.g. first_name = models.CharField("person's first name", max_length=30)
+
 If you’re interested, you can also run $python manage.py check; this checks for any problems in your project
 without making migrations or touching the database.
 By running makemigrations, you’re telling Django that you’ve made some changes to your models (in this case,
@@ -88,3 +134,38 @@ Run python manage.py makemigrations to create migrations for those changes
 Run python manage.py migrate to apply those changes to the database.
 
 NULL: If True, Django will store empty values as NULL in the database. Default is False.
+
+null is purely database-related, whereas blank is validation-related.
+If a field has blank=True, form validation will allow entry of an empty value
+
+In the choices list: The first element in each tuple is the value that will be stored in the database. The second
+element will be displayed by the default form widget or in a ModelChoiceField.
+
+
+class Meta:
+    ordering = ['name']
+If you specify this, it tells Django that unless an ordering is given explicitly with order_by(), all Post
+objects should be ordered by the name field whenever they’re retrieved with the Django database API.
+
+
+#### admin ####
+
+we need to tell the admin that Post objects have an admin interface, so register your models there.
+
+# make changes locally, push those changes to GitHub, and pull your changes down to your live Web server.
+# This allows you to work and experiment without breaking your live Web site.
+
+When Django loads at server startup, it runs the admin.autodiscover() function. This function iterates over your
+INSTALLED_APPS setting and looks for a file called admin.py in each installed app. If an admin.py exists in a given
+app, it executes the code in that file. In the admin.py in blog app, each call to admin.site.register() simply
+registers the given model with the admin. The admin site will only display an edit/change interface for models that
+have been explicitly registered.
+The app django.contrib.auth includes its own admin.py, which is why Users and Groups showed up automatically in the
+admin. Other django.contrib apps, such as django.contrib.redirects, also add themselves to the admin, as do many
+third-party Django applications you might download from the Web.Beyond that, the Django admin site is just a Django
+application, with its own models, templates, views and URLpatterns. You add it to your application by hooking it into
+your URLconf, just as you hook in your own views. You can inspect its templates, views and URLpatterns by poking around
+in django/contrib/admin in your copy of the Django codebase
+
+
+
