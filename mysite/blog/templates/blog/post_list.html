@@ -1,9 +1,20 @@
 <html>
     <head>
-
+        <title>Harshit's blog</title>
     </head>
     <body>
-        <p>Hi there!</p>
-        <p>This page will show the list of posts :)</p>
+        <div>
+            <h1><a href="">Welcome to my blog</a></h1>
+        </div>
+
+        {% for post in posts %}
+            <div>
+                <h1><a href="">{{ post.title }}</a></h1>
+                <p>{{ post.text|linebreaksbr }}</p>
+                <p>published: {{ post.pub_date }}</p>
+            </div>
+        {% endfor %}
+
+
     </body>
 </html>

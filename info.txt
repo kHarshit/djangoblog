@@ -89,7 +89,15 @@ It’s a very common idiom to load a template, fill a context and return an Http
 rendered template. Django provides a shortcut render(). It takes the request object as its first argument, a template
 name as its second argument and a dictionary as its optional third argument. It returns an HttpResponse object of the
 given template rendered with the given context.
+The get_object_or_404() function takes a Django model as its first argument and an arbitrary number of keyword
+arguments, which it passes to the get() function of the model’s manager. It raises Http404 if the object doesn’t exist.
 
+The template system uses dot-lookup syntax to access variable attributes. In the example {{ post.text }}, first Django
+does a dictionary lookup on the object post. Failing that, it tries an attribute lookup – which works, in this case.
+If attribute lookup had failed, it would’ve tried a list-index lookup.
+Everything you put between {% for %} and {% endfor %} will be repeated for each object in the list. We are accessing
+data in each of the fields defined in our Post model. Also, the |linebreaksbr is piping the posts' text through a
+filter to convert line-breaks into paragraphs.
 
 
 #### database ####
