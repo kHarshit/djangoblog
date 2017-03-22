@@ -1,6 +1,4 @@
-{% extends 'blog/base.html' %}
 {% load static %}
-
 <html>
     <head>
         <title>Harshit's blog</title>
@@ -13,17 +11,15 @@
         <div class="page_header">
             <h1><a href="">Welcome to my blog</a></h1>
         </div>
-        {% block content %}
-        {% for post in posts %}
-            <div class="post">
-                <h1><a href="">{{ post.title }}</a></h1>
-                <p>{{ post.text|linebreaksbr }}</p>
-                <div class="date">
-                <p>published: {{ post.pub_date }}</p>
-                </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-8">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
             </div>
-        {% endfor %}
-        {% endblock content %}
+        </div>
 
 
     </body>

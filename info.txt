@@ -99,6 +99,14 @@ Everything you put between {% for %} and {% endfor %} will be repeated for each 
 data in each of the fields defined in our Post model. Also, the |linebreaksbr is piping the posts' text through a
 filter to convert line-breaks into paragraphs.
 
+Another nice thing Django has for you is template extending. It means that you can use the same parts of your HTML for
+different pages of your website. Templates help when you want to use the same information or layout in more than one
+place. You don't have to repeat yourself in every file. And if you want to change something, you don't have to do it
+in every template, just one!
+A base template is the most basic template that you extend on every page of your website.
+You used the template tag {% block %} to make an area that will have HTML inserted in it. That HTML will come from
+another template that extends this template (base.html)
+
 
 #### database ####
 
