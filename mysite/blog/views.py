@@ -30,7 +30,7 @@ def post_new(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.pub_date = timezone.now()
+            # post.pub_date = timezone.now()
             post.save()
             return HttpResponseRedirect('post_detail', pk=post.pk)
             # return HttpResponseRedirect('/thanks/')
@@ -46,12 +46,29 @@ def post_edit(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.pub_date = timezone.now()
+            # post.pub_date = timezone.now()
             post.save()
             return HttpResponseRedirect('post_detail', pk=post.pk)
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
+
+
+def post_draft_list(request):
+    post = Post.objects.filter(pub_date__isnull=True).order_by('create_date')
+    return render(request, 'blog/post_draft_list.html', {'posts': post})
+
+
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish()
+    return redirect('post_detail', pk=pk)
+
+
+def post_remove(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.delete()
+    return redirect('post_list')
 
 
 def current_datetime(request):
