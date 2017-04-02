@@ -12,6 +12,8 @@
         {% if user.is_authenticated %}
         <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
         <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+        {% else %}
+            <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon-lock"></span></a>
         {% endif %}
         <h1>{{ post.title }}</h1>
         <p>{{ post.text|linebreaksbr }}</p>
