@@ -12,5 +12,8 @@ urlpatterns = [
     url(r'^blog/drafts/$', views.post_draft_list, name='post_draft_list'),
     url(r'^blog/post/(?P<pk>\d+)/publish/$', views.post_publish, name='post_publish'),
     url(r'^blog/post/(?P<pk>\d+)/remove/$', views.post_remove, name='post_remove'),
+    url(r'^blog/post/(?P<pk>\d+)/comment/$', views.add_comment_to_post, name='add_comment_to_post'),
+    url(r'^blog/comment/(?P<pk>\d+)/approve/$', views.comment_approve, name='comment_approve'),
+    url(r'^blog/comment/(?P<pk>\d+)/remove/$', views.comment_remove, name='comment_remove'),
     url(r'^time/$', views.current_datetime),  # /blog/time
 ]
