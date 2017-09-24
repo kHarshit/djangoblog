@@ -14,9 +14,9 @@ from django.core.wsgi import get_wsgi_application
 
 
 # path for herokuapp
-# path = "/home/harshitblog/myblog/mysite"
-# if path not in sys.path:
-#     sys.path.append(path)
+path = "/home/harshitblog/mysite"
+if path not in sys.path:
+    sys.path.append(path)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
