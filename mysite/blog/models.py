@@ -2,10 +2,11 @@ from django.db import models
 from django.utils import timezone
 
 
-class Post(models.Model):
-    author = models.ForeignKey('auth.User')
-    title = models.CharField(max_length=200)
-    text = models.TextField()
+class Post(models.Model):  # name of model  # models.Model means that the Post is a Django Model,
+    #  so Django knows that it should be saved in the database.
+    author = models.ForeignKey('auth.User')  # link to another model
+    title = models.CharField(max_length=200)  # text with a limited number of characters
+    text = models.TextField()  # long text without a limit.
     create_date = models.DateTimeField(default=timezone.now)
     pub_date = models.DateTimeField(blank=True, null=True)
 

@@ -16,8 +16,9 @@ def blog(request):
 
 
 def post_list(request):
+    # filter posts by timezone and order them by publication date
     posts = Post.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
-    return render(request, 'blog/post_list.html', {'posts':posts})
+    return render(request, 'blog/post_list.html', {'posts': posts})
 
 
 def post_detail(request, pk):
@@ -31,6 +32,7 @@ def post_new(request):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
+            # commit=False means that we don't want to save the Post model yet – we want to add the author first.
             post.author = request.user
             # post.pub_date = timezone.now()
             post.save()

@@ -17,6 +17,8 @@ because Django’s view is more like the controller in MVC, and MVC’s view is 
 
 #### views.py #####
 
+Views connect models and templates, take some content (models saved in the database) and display it nicely in template.
+
 A view is a “type” of Web page in your Django application that generally serves a specific function and has a
 specific template.
 we don’t do anything with request, but it must be the first parameter of the view nonetheless.
@@ -76,6 +78,11 @@ $ for the end of the text
 + to indicate that the previous item should be repeated at least once
 () to capture part of the pattern
 
+^post/ is telling Django to take anything that has post/ at the beginning of the URL (right after ^)
+(\d+) means that there will be a number (one or more digits) and that we want the number captured and extracted
+/ tells Django that another / character should follow
+$ then indicates the end of the URL meaning that only strings ending with the / will match this pattern
+
 
 #### templates ####
 
@@ -107,6 +114,20 @@ A base template is the most basic template that you extend on every page of your
 You used the template tag {% block %} to make an area that will have HTML inserted in it. That HTML will come from
 another template that extends this template (base.html)
 
+Django template tags allow us to transfer Python-like things into HTML, so you can build dynamic websites faster.
+
+In post_list.html:
+{% url 'post_detail' pk=post.pk %}. As you might suspect, the {% %} notation means that we are using Django template
+tags. This time we will use one that will create a URL for us! The post_detail part means that Django will be expecting
+a URL in blog/urls.py with name=post_detail. And how about pk=post.pk? pk is short for primary key, which is a unique
+name for each record in a database. Because we didn't specify a primary key in our Post model, Django creates one for
+us (by default, a number that increases by one for each record, i.e. 1, 2, 3) and adds it as a field named pk to each
+of our posts. We access the primary key by writing post.pk, the same way we access other fields (title, author, etc.)
+in our Post object!
+
+Servers like PythonAnywhere like to treat "static files" (like CSS files) differently from Python files, because they
+can optimise for them to be loaded faster. As a result, whenever we make changes to our CSS files, we need to run an
+extra command on the server to tell it to update them: python manage.py collectstatic.
 
 #### database ####
 
@@ -184,4 +205,14 @@ your URLconf, just as you hook in your own views. You can inspect its templates,
 in django/contrib/admin in your copy of the Django codebase
 
 
+#### QuerySets ####
 
+A QuerySet is, in essence, a list of objects of a given Model. QuerySets allow you to read the data
+from the database, filter it and order it.
+> from blog.models import Post
+> Post.objects.all()
+> Post.objects.filter(title__contains='title')
+> Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+
+The Django web framework includes a default object-relational mapping layer (ORM) that can be used to
+interact with application data from various relational databases such as SQLite, PostgreSQL and MySQL.
