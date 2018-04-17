@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^blog/comment/(?P<pk>\d+)/approve/$', views.comment_approve, name='comment_approve'),
     url(r'^blog/comment/(?P<pk>\d+)/remove/$', views.comment_remove, name='comment_remove'),
     url(r'^time/$', views.current_datetime),  # /blog/time
+    url(r'^blog/about_site/$', views.about_site, name="about_site"),
 ]

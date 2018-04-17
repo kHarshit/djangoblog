@@ -1,15 +1,17 @@
 {% load static %}
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Harshit's blog</title>
         <link rel="stylesheet" href="{% static 'blog/styles.css' %}" />
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <div class="page_header">
-            <h1><a href="{% url 'post_list' %}">Harshit's blog</a></h1>
             {% if user.is_authenticated %}
             <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
             <a href="{% url 'post_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
@@ -17,6 +19,7 @@
             {% else %}
             <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
             {% endif %}
+            <h1><a href="{% url 'post_list' %}">Harshit's blog</a></h1>
         </div>
 
         <div class="container">
@@ -28,6 +31,12 @@
             </div>
         </div>
 
-
+        <footer id="last_footer">
+            <i class="fa fa-creative-commons" aria-hidden="true"></i>
+            Harshit Kumar 2018 - <a href="{% url 'about_site' %}">About this site</a>
+            <br />
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">
+<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/80x15.png" /></a>
+        </footer>
     </body>
 </html>

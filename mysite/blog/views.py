@@ -112,3 +112,6 @@ def current_datetime(request):
     html = "It is now {0}".format(now)
     return HttpResponse(html)
 
+
+def about_site(request):
+    return render(request, 'blog/about_site.html')
